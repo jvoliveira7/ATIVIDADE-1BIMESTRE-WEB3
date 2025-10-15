@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: postgres:14
@@ -11,7 +10,8 @@ services:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - .:/rails_app
+      - ./meu_app:/rails_app  
+    working_dir: /rails_app      
     ports:
       - "3000:3000"
     depends_on:

@@ -11,11 +11,11 @@ WORKDIR /rails_app
 RUN gem install bundler
 
 # Copia o Gemfile para o container e instala as gems
-COPY Gemfile Gemfile.lock ./
+COPY meu_app/Gemfile meu_app/Gemfile.lock ./
 RUN bundle install
 
 # Copia o resto do código da aplicação
-COPY . .
+COPY ./meu_app .
 
 # Expõe a porta 3000 para ser acessada de fora
 EXPOSE 3000
