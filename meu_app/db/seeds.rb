@@ -1,20 +1,45 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# db/seeds.rb
 
-  Post.create!([
-    { title: "Laravel para sempre em tads?", content: "This is the content of the first post." },
-    { title: "Joao vai trabalhar na prefeitura", content: "This is the content of the second post." },
-    { title: "giovana saiu cedo", content: "This is the content of the third post." }
-  ])
+puts "Iniciando o processo de seed..."
 
+# Limpa os dados existentes para evitar duplicatas
+puts "Limpando dados de Usuários e Papéis..."
+User.destroy_all
+Role.destroy_all
 
-    Comment.create!([
-      { content: "será??, ou RoR?", post_id: 1}
-    ])
+# Cria os Papéis (Roles)
+puts "Criando papéis (admin, moderator, student)..."
+admin_role = Role.find_or_create_by!(title: "admin")
+moderator_role = Role.find_or_create_by!(title: "moderator")
+student_role = Role.find_or_create_by!(title: "student")
+puts "Papéis criados com sucesso!"
+
+# Cria os Usuários de Teste
+puts "Criando usuários de teste..."
+
+User.create!(
+  name: "Administrador Fulano",
+  email: "admin@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: admin_role
+)
+
+User.create!(
+  name: "Moderador 1",
+  email: "moderator@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: moderator_role
+)
+
+User.create!(
+  name: "Estudante 1",
+  email: "student@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: student_role
+)
+
+puts "Usuários de teste criados com sucesso!"
+puts "Seed finalizado. ✨"
