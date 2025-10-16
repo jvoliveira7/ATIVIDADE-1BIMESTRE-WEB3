@@ -54,8 +54,8 @@ class QuestionnairesController < ApplicationController
 
   private
     def set_questionnaire
-      @questionnaire = Questionnaire.find(params[:id])
-    end
+     @questionnaire = Questionnaire.includes(:questions).find(params[:id]) # Adicione .includes(:questions)
+end
 
     def questionnaire_params
       params.require(:questionnaire).permit(:code, :title, :description, :duration_minutes, :user_id)

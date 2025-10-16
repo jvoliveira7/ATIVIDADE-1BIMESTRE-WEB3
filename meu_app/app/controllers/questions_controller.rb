@@ -11,27 +11,28 @@ class QuestionsController < ApplicationController
   end
 
   # GET /questions/new
-  def new
-    @question = Question.new
-  end
+def new
+  # Encontra o questionário pai usando o ID que passamos na URL
+  @questionnaire = Questionnaire.find(params[:questionnaire_id])
+  # Cria uma nova pergunta já associada a este questionário
+  @question = @questionnaire.questions.build
+end
 
   # GET /questions/1/edit
   def edit
   end
 
   # POST /questions or /questions.json
-  def create
-    @question = Question.new(question_params)
+def create
+  @question = Question.new(question_params)
 
-    respond_to do |format|
-      if @question.save
-        format.html { redirect_to @question, notice: "Question was successfully created." }
-        format.json { render :show, status: :created, location: @question }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @question.errors, status: :unprocessable_entity }
-      end
-    end
+  if @question.save
+    # MUDANÇA AQUI: Redireciona para o questionário pai, não para a pergunta
+    redirect_to @question.questionnaire, notice: "Pergunta foi criada com sucesso."
+  else
+    render :new, status: :unprocessable_entity
+  end
+end
   end
 
   # PATCH/PUT /questions/1 or /questions/1.json
