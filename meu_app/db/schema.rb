@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_16_020342) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_16_043322) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,11 +34,39 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_020342) do
     t.index ["post_id"], name: "index_comments_on_post_id"
   end
 
+  create_table "options", force: :cascade do |t|
+    t.text "text"
+    t.boolean "correct"
+    t.bigint "question_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_options_on_question_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.string "code"
+    t.string "title"
+    t.text "description"
+    t.integer "duration_minutes"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_questionnaires_on_user_id"
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.text "text"
+    t.bigint "questionnaire_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["questionnaire_id"], name: "index_questions_on_questionnaire_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -64,5 +92,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_020342) do
   end
 
   add_foreign_key "comments", "posts"
+  add_foreign_key "options", "questions"
+  add_foreign_key "questionnaires", "users"
+  add_foreign_key "questions", "questionnaires"
   add_foreign_key "users", "roles"
 end
