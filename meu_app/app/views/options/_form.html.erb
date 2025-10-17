@@ -11,22 +11,21 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :text %>
-    <%= form.textarea :text, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": option.errors[:text].none?, "border-red-400 focus:outline-red-600": option.errors[:text].any?}] %>
-  </div>
-
-  <div class="my-5 flex items-center gap-2">
-    <%= form.label :correct %>
-    <%= form.checkbox :correct, class: ["block shadow-sm rounded-md border order-first h-5 w-5", {"border-gray-400 focus:outline-blue-600": option.errors[:correct].none?, "border-red-400 focus:outline-red-600": option.errors[:correct].any?}] %>
-  </div>
+  <%# Campo oculto para associar a opção à pergunta correta %>
+  <%= form.hidden_field :question_id %>
 
   <div class="my-5">
-    <%= form.label :question_id %>
-    <%= form.text_field :question_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": option.errors[:question_id].none?, "border-red-400 focus:outline-red-600": option.errors[:question_id].any?}] %>
+    <%= form.label :text, "Texto da Opção" %>
+    <%= form.text_field :text, class: "block shadow rounded-md border p-2 mt-1 w-full" %>
+  </div>
+
+  <div class="my-5 flex items-center">
+    <%# Usando um checkbox para o campo booleano 'correct' %>
+    <%= form.check_box :correct, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600" %>
+    <%= form.label :correct, "Esta é a resposta correta?", class: "ml-2 block text-sm text-gray-900" %>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Salvar Opção", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
   </div>
 <% end %>

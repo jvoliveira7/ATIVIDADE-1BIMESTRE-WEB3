@@ -1,70 +1,64 @@
 class OptionsController < ApplicationController
   before_action :set_option, only: %i[ show edit update destroy ]
 
-  # GET /options or /options.json
+  # GET /options
   def index
     @options = Option.all
   end
 
-  # GET /options/1 or /options/1.json
+  # GET /options/1
   def show
   end
 
   # GET /options/new
   def new
-    @option = Option.new
+    # Encontra a pergunta pai usando o ID que passamos na URL
+    @question = Question.find(params[:question_id])
+    # Cria uma nova opção já associada a esta pergunta
+    @option = @question.options.build
   end
 
   # GET /options/1/edit
   def edit
   end
 
-  # POST /options or /options.json
+  # POST /options
   def create
     @option = Option.new(option_params)
 
-    respond_to do |format|
-      if @option.save
-        format.html { redirect_to @option, notice: "Option was successfully created." }
-        format.json { render :show, status: :created, location: @option }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @option.errors, status: :unprocessable_entity }
-      end
+    if @option.save
+      # Redireciona para o questionário da pergunta pai.
+      redirect_to @option.question.questionnaire, notice: "Opção adicionada com sucesso."
+    else
+      # Se a validação falhar, recarrega @question para a view 'new' funcionar
+      @question = Question.find(option_params[:question_id])
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /options/1 or /options/1.json
+  # PATCH/PUT /options/1
   def update
-    respond_to do |format|
-      if @option.update(option_params)
-        format.html { redirect_to @option, notice: "Option was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @option }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @option.errors, status: :unprocessable_entity }
-      end
+    if @option.update(option_params)
+      redirect_to @option, notice: "Option was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /options/1 or /options/1.json
+  # DELETE /options/1
   def destroy
     @option.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to options_path, notice: "Option was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to options_url, notice: "Option was successfully destroyed."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_option
-      @option = Option.find(params.expect(:id))
+      @option = Option.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    # MÉTODO CORRIGIDO
     def option_params
-      params.expect(option: [ :text, :correct, :question_id ])
+      # VERSÃO CORRETA: Usa require e permit para segurança.
+      params.require(:option).permit(:text, :correct, :question_id)
     end
 end
