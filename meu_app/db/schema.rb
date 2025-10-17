@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_16_043322) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_17_110904) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_043322) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
+  end
+
+  create_table "answers", force: :cascade do |t|
+    t.bigint "attempt_id", null: false
+    t.bigint "question_id", null: false
+    t.bigint "option_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attempt_id"], name: "index_answers_on_attempt_id"
+    t.index ["option_id"], name: "index_answers_on_option_id"
+    t.index ["question_id"], name: "index_answers_on_question_id"
+  end
+
+  create_table "attempts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "questionnaire_id", null: false
+    t.integer "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["questionnaire_id"], name: "index_attempts_on_questionnaire_id"
+    t.index ["user_id"], name: "index_attempts_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -91,6 +112,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_043322) do
     t.index ["role_id"], name: "index_users_on_role_id"
   end
 
+  add_foreign_key "answers", "attempts"
+  add_foreign_key "answers", "options"
+  add_foreign_key "answers", "questions"
+  add_foreign_key "attempts", "questionnaires"
+  add_foreign_key "attempts", "users"
   add_foreign_key "comments", "posts"
   add_foreign_key "options", "questions"
   add_foreign_key "questionnaires", "users"

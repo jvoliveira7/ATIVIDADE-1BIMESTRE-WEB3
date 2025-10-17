@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
+
   resources :options
   resources :questions
-  resources :questionnaires
+  resources :questionnaires do
+  resources :attempts, only: [:new, :create, :show]
+  end
   devise_for :users
   get "home/index"
   resources :comments
