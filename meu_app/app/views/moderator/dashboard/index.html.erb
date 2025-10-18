@@ -1,24 +1,36 @@
-<h1 class="mb-4">Dashboard do Moderador</h1>
+<div class="container mt-4">
+  <h1 class="mb-4">Dashboard do Moderador</h1>
 
-<h3>Resultados dos Seus Questionários</h3>
+  <h3 class="mb-3">Resultados Recentes dos Seus Questionários</h3>
 
-<table class="table table-striped mt-4">
-  <thead>
-    <tr>
-      <th>Aluno</th>
-      <th>Questionário</th>
-      <th>Pontuação</th>
-      <th>Data</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @attempts.each do |attempt| %>
-      <tr>
-        <td><%= attempt.user.email %></td>
-        <td><%= attempt.questionnaire.title %></td>
-        <td><%= attempt.score %> / <%= attempt.questionnaire.questions.count %></td>
-        <td><%= attempt.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Questionário</th>
+            <th>Pontuação</th>
+            <th>Data da Tentativa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @attempts.any? %>
+            <% @attempts.each do |attempt| %>
+              <tr>
+                <td><%= attempt.user.name %> (<%= attempt.user.email %>)</td>
+                <td><%= attempt.questionnaire.title %></td>
+                <td><strong><%= attempt.score %> / <%= attempt.questionnaire.questions.count %></strong></td>
+                <td><%= attempt.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="4" class="text-center text-muted">Ainda não há resultados para seus questionários.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

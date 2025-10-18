@@ -4,9 +4,9 @@ class Moderator::BaseController < ApplicationController
   private
 
   def authenticate_moderator!
-    # Redireciona a menos que o usuário seja moderador OU admin (admin pode ver tudo)
+    # Permite o acesso se o usuário for moderador OU admin
     unless current_user.moderator? || current_user.admin?
-      redirect_to root_path, alert: "Acesso negado."
+      redirect_to root_path, alert: "Você não tem permissão para acessar esta área."
     end
   end
 end

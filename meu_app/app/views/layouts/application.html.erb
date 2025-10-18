@@ -1,67 +1,86 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Meu App" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "Code Quiz" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <link rel="stylesheet" href="<%= asset_path('application.css') %>" data-turbo-track="reload">
+    <%# Carrega o CSS do Bootstrap compilado %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%# Carrega o JS do Bootstrap e Popper via Importmap %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <!-- Flash messages estilizadas -->
-    <div class="container mt-3">
-      <% flash.each do |key, message| %>
-        <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
-          <%= message %>
+  <body class="bg-light">
+    <%# --- BARRA DE NAVEGAÇÃO BOOTSTRAP COMPLETA --- %>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <%= link_to "Code Quiz", root_path, class: "navbar-brand" %>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <% if user_signed_in? %>
+                <li class="nav-item">
+                  <span class="navbar-text me-3">
+                    Olá, <%= current_user.email %>
+                  </span>
+                </li>
+
+                <%# --- LÓGICA DE LINKS POR PAPEL --- %>
+                <% if current_user.admin? %>
+                  <li class="nav-item">
+                    <%= link_to "Painel Admin", admin_root_path, class: "nav-link" %>
+                  </li>
+                <% elsif current_user.moderator? %>
+                  <li class="nav-item">
+                    <%= link_to "Meu Dashboard", moderator_root_path, class: "nav-link" %>
+                  </li>
+                <% end %>
+                <li class="nav-item">
+                    <%= link_to "Questionários", questionnaires_path, class: "nav-link" %>
+                </li>
+                 <%# --- FIM DA LÓGICA DE LINKS --- %>
+
+                <li class="nav-item">
+                  <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-outline-danger" %>
+                </li>
+              <% else %>
+                <li class="nav-item">
+                  <%= link_to "Login", new_user_session_path, class: "nav-link" %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <%# --- FIM DA BARRA DE NAVEGAÇÃO --- %>
+
+    <main class="container mt-4">
+      <%# Mensagens de alerta e notice com estilo Bootstrap %>
+      <% if notice.present? %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= notice %>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% end %>
-    </div>
-
-    <!-- Navbar Bootstrap 5 -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="/">Code Quiz</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <% if user_signed_in? %>
-              <li class="nav-item">
-                <span class="navbar-text me-3">Olá, <%= current_user.email %></span>
-              </li>
-              <li class="nav-item">
-                <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-outline-light" %>
-              </li>
-            <% else %>
-              <li class="nav-item">
-                <%= link_to "Login", new_user_session_path, class: "nav-link" %>
-              </li>
-              <li class="nav-item">
-                <%= link_to "Sign up", new_user_registration_path, class: "nav-link" %>
-              </li>
-            <% end %>
-          </ul>
+      <% if alert.present? %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <%= alert %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      </div>
-    </nav>
+      <% end %>
 
-    <!-- Conteúdo principal -->
-    <main class="container mt-4">
+      <%# Conteúdo da página é inserido aqui %>
       <%= yield %>
     </main>
   </body>
 </html>
+

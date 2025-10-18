@@ -32,6 +32,12 @@ class Admin::UsersController < Admin::BaseController
 
   # PATCH/PUT /admin/users/1
   def update
+    # Remove campos de senha se estiverem em branco
+    if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
+    end
+
     if @admin_user.update(user_params)
       redirect_to admin_users_path, notice: "Usuário atualizado com sucesso.", status: :see_other
     else

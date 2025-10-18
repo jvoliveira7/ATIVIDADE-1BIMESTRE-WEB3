@@ -1,25 +1,43 @@
-<%= form_with model: [:admin, @questionnaire], local: true do |form| %>
-  <% if @questionnaire.errors.any? %>
+<%# app/views/admin/questionnaires/_form.html.erb %>
+
+<%# Breadcrumb simples %>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><%= link_to "Dashboard", admin_root_path %></li>
+    <li class="breadcrumb-item"><%= link_to "Questionários", admin_questionnaires_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= @admin_questionnaire.new_record? ? "Novo Questionário" : "Editar Questionário" %>
+    </li>
+  </ol>
+</nav>
+
+<%= form_with(model: [:admin, @admin_questionnaire], local: true) do |form| %>
+  <% if @admin_questionnaire.errors.any? %>
     <div class="alert alert-danger">
-      <h4>Erros:</h4>
+      <h4><%= pluralize(@admin_questionnaire.errors.count, "erro") %> proibiu este questionário de ser salvo:</h4>
       <ul>
-        <% @questionnaire.errors.full_messages.each do |msg| %>
+        <% @admin_questionnaire.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
+  <!-- Título -->
   <div class="mb-3">
     <%= form.label :title, "Título", class: "form-label" %>
-    <%= form.text_field :title, class: "form-control" %>
+    <%= form.text_field :title, class: "form-control", autofocus: true %>
   </div>
 
+  <!-- Descrição -->
   <div class="mb-3">
     <%= form.label :description, "Descrição", class: "form-label" %>
-    <%= form.text_area :description, rows: 4, class: "form-control" %>
+    <%= form.text_area :description, class: "form-control" %>
   </div>
 
-  <%= form.submit class: "btn btn-primary" %>
-  <%= link_to "Cancelar", admin_questionnaires_path, class: "btn btn-secondary ms-2" %>
+  <!-- Botões -->
+  <div class="actions">
+    <%= form.submit @admin_questionnaire.new_record? ? "Criar Questionário" : "Atualizar Questionário", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_questionnaires_path, class: "btn btn-secondary ms-2" %>
+  </div>
 <% end %>
