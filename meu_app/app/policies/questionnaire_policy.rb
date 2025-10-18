@@ -4,40 +4,43 @@ class QuestionnairePolicy < ApplicationPolicy
     true
   end
 
-  # Todos os usuários logados podem ver os detalhes de um questionário
+  # Todos os usuários logados podem ver detalhes de um questionário
   def show?
     true
   end
 
   # Apenas admins e moderadores podem criar questionários
   def create?
-    user.role.title == 'admin' || user.role.title == 'moderator'
+    user.admin? || user.moderator?
   end
 
-  # A mesma regra de 'create?' se aplica a 'new'
   def new?
     create?
   end
 
-  # Admins podem editar qualquer questionário.
-  # Moderadores só podem editar os que eles mesmos criaram.
+  # Admin pode editar qualquer questionário
+  # Moderador só pode editar os próprios
   def update?
-    user.role.title == 'admin' || record.user == user
+    user.admin? || (user.moderator? && record.user == user)
   end
 
-  # A mesma regra de 'update?' se aplica a 'edit'
   def edit?
     update?
   end
 
-  # A mesma regra de 'update?' se aplica a 'destroy'
   def destroy?
     update?
   end
 
-  class Scope < Scope # <-- AQUI ESTÁ A CORREÇÃO
+  class Scope < Scope
     def resolve
-      scope.all # Por enquanto, todos podem ver todos os questionários na lista
+      if user.admin?
+        scope.all
+      elsif user.moderator?
+        scope.where(user: user) # só os próprios questionários
+      else
+        scope.all # Alunos podem ver todos, mas não editar
+      end
     end
   end
 end

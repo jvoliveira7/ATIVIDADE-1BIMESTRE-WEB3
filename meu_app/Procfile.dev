@@ -1,2 +1,6 @@
-web: bin/rails server
-css: bin/rails tailwindcss:watch
+web: bin/rails server -p 3000
+css: bin/rails tailwindcss:watch # O nome do comando não importa, ele executa o processo de build do CSS
+    *(**Nota:** Mesmo usando Bootstrap, o `css: bin/rails tailwindcss:watch` funciona porque o que ele realmente faz é rodar o script de build definido em `package.json` ou o compilador de assets configurado, que agora será o `dartsass-rails`)*. Para ser mais correto, vamos usar o comando do Dartsass:
+```yaml
+web: bin/rails server -p 3000
+css: bin/rails dartsass:watch

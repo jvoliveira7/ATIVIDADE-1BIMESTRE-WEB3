@@ -6,21 +6,32 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+    # Healthcheck garante que o serviço 'web' espere o banco de dados ficar pronto
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   web:
     build: .
+    # O comando padrão (CMD) do Dockerfile será usado para iniciar.
+    # Esta linha extra garante a remoção de um arquivo de servidor antigo antes de iniciar.
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - ./meu_app:/rails_app  
-    working_dir: /rails_app      
+      - ./meu_app:/rails_app # Mapeia corretamente sua subpasta para o WORKDIR do contêiner
     ports:
       - "3000:3000"
-    depends_on:
-      - db
     environment:
+      RAILS_ENV: development
       DATABASE_HOST: db
       DATABASE_USER: postgres
       DATABASE_PASSWORD: password
-      RAILS_ENV: development
+    # Faz o serviço 'web' esperar a condição 'service_healthy' do 'db' passar
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
+

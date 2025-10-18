@@ -1,0 +1,26 @@
+<h1>Questionários</h1>
+
+<%= link_to "Novo Questionário", new_admin_questionnaire_path, class: "btn btn-primary mb-3" %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descrição</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @questionnaires.each do |q| %>
+      <tr>
+        <td><%= q.title %></td>
+        <td><%= q.description %></td>
+        <td>
+          <%= link_to "Mostrar", admin_questionnaire_path(q), class: "btn btn-sm btn-info" %>
+          <%= link_to "Editar", edit_admin_questionnaire_path(q), class: "btn btn-sm btn-warning" %>
+          <%= link_to "Excluir", admin_questionnaire_path(q), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-sm btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

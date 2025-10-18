@@ -1,0 +1,12 @@
+<!-- app/views/admin/results/show.html.erb -->
+
+<h1>Detalhes do Resultado</h1>
+
+<div class="card mb-3" style="padding: 15px;">
+  <p><strong>Aluno:</strong> <%= @result.user.name %> (<%= @result.user.email %>)</p>
+  <p><strong>Questionário:</strong> <%= @result.questionnaire.title %></p>
+  <p><strong>Pontuação:</strong> <%= @result.score %></p>
+  <p><strong>Respondido em:</strong> <%= @result.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+</div>
+
+<%= link_to "Voltar", admin_results_path, class: "btn btn-secondary" %>

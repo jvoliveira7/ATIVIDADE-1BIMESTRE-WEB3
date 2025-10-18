@@ -1,0 +1,24 @@
+<h1 class="mb-4">Dashboard do Moderador</h1>
+
+<h3>Resultados dos Seus Questionários</h3>
+
+<table class="table table-striped mt-4">
+  <thead>
+    <tr>
+      <th>Aluno</th>
+      <th>Questionário</th>
+      <th>Pontuação</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @attempts.each do |attempt| %>
+      <tr>
+        <td><%= attempt.user.email %></td>
+        <td><%= attempt.questionnaire.title %></td>
+        <td><%= attempt.score %> / <%= attempt.questionnaire.questions.count %></td>
+        <td><%= attempt.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

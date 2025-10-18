@@ -1,0 +1,11 @@
+<div class="admin_user_card" style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+  <p><strong>Name:</strong> <%= user.name %></p>
+  <p><strong>Email:</strong> <%= user.email %></p>
+  <p><strong>Role:</strong> <%= user.role.title %></p>
+  
+  <p>
+    <%= link_to "Show", admin_user_path(user) %> |
+    <%= link_to "Edit", edit_admin_user_path(user) %> |
+    <%= link_to "Delete", admin_user_path(user), method: :delete, data: { confirm: "Are you sure?" } %>
+  </p>
+</div>

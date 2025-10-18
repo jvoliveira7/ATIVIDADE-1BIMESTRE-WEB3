@@ -1,0 +1,40 @@
+<!-- app/views/admin/dashboard/index.html.erb -->
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Painel Administrativo</h1>
+
+  <div class="card p-4 shadow-sm">
+    <p class="fs-5 mb-4">Bem-vindo, <strong><%= current_user.email %></strong></p>
+
+    <!-- Estatísticas -->
+    <div class="row mb-4 text-center">
+      <div class="col-md-4 mb-3">
+        <div class="card bg-light p-3 shadow-sm">
+          <h5 class="mb-2">Usuários</h5>
+          <h2><%= User.count %></h2>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card bg-light p-3 shadow-sm">
+          <h5 class="mb-2">Questionários</h5>
+          <h2><%= Questionnaire.count %></h2>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="card bg-light p-3 shadow-sm">
+          <h5 class="mb-2">Resultados</h5>
+          <h2><%= UserResult.count %></h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+      <%= link_to "📊 Ver Resultados", admin_results_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "📝 Gerenciar Questionários", admin_questionnaires_path, class: "btn btn-secondary btn-lg" %>
+      <%= link_to "Gerenciar Usuários", admin_users_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>

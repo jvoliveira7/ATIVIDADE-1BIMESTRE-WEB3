@@ -1,0 +1,28 @@
+<!-- app/views/admin/results/index.html.erb -->
+
+<h1>Resultados</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Aluno</th>
+      <th>Questionário</th>
+      <th>Pontuação</th>
+      <th>Criado em</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @results.each do |result| %>
+      <tr>
+        <td><%= result.user.name %></td>
+        <td><%= result.questionnaire.title %></td>
+        <td><%= result.score %></td>
+        <td><%= result.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+        <td>
+          <%= link_to "Ver", admin_result_path(result), class: "btn btn-sm btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

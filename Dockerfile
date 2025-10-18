@@ -1,24 +1,47 @@
-# Use a imagem oficial do Ruby
-FROM ruby:3.2.2
+# syntax=docker/dockerfile:1
+FROM ruby:3.2.2-slim
 
-# Instala dependências do sistema
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs npm
+# --- Instala dependências essenciais ---
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        libpq-dev \
+        nodejs \
+        npm \
+        curl \
+        sed \
+    && rm -rf /var/lib/apt/lists/*
 
-# Define o diretório de trabalho
+# --- Define diretório de trabalho ---
 WORKDIR /rails_app
 
-# Instala o Bundler
+# --- Instala bundler ---
 RUN gem install bundler
 
-# Copia o Gemfile para o container e instala as gems
+# --- Copia Gemfile e Gemfile.lock e instala gems ---
 COPY meu_app/Gemfile meu_app/Gemfile.lock ./
 RUN bundle install
 
-# Copia o resto do código da aplicação
+# --- Copia restante do projeto ---
 COPY ./meu_app .
 
-# Expõe a porta 3000 para ser acessada de fora
+# --- Corrige quebras de linha do Windows nos executáveis ---
+RUN sed -i 's/\r$//' bin/rails bin/rake
+
+# --- Define variáveis de ambiente para o banco ---
+ARG DATABASE_HOST=db_build_fake
+ARG DATABASE_USER=user_fake
+ARG DATABASE_PASSWORD=pw_fake
+ENV DATABASE_HOST=$DATABASE_HOST
+ENV DATABASE_USER=$DATABASE_USER
+ENV DATABASE_PASSWORD=$DATABASE_PASSWORD
+
+# --- Compila SCSS do Bootstrap ---
+RUN bin/rails dartsass:build
+
+# --- Expõe porta ---
 EXPOSE 3000
 
-# Comando principal para iniciar o servidor
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# --- Comando padrão para rodar o Rails ---
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]

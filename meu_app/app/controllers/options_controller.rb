@@ -8,6 +8,7 @@ class OptionsController < ApplicationController
 
   # GET /options/1
   def show
+    authorize @option
   end
 
   # GET /options/new
@@ -16,15 +17,18 @@ class OptionsController < ApplicationController
     @question = Question.find(params[:question_id])
     # Cria uma nova opção já associada a esta pergunta
     @option = @question.options.build
+    authorize @option
   end
 
   # GET /options/1/edit
   def edit
+    authorize @option
   end
 
   # POST /options
   def create
     @option = Option.new(option_params)
+    authorize @option
 
     if @option.save
       # Redireciona para o questionário da pergunta pai.
@@ -38,8 +42,10 @@ class OptionsController < ApplicationController
 
   # PATCH/PUT /options/1
   def update
+    authorize @option
+
     if @option.update(option_params)
-      redirect_to @option, notice: "Option was successfully updated."
+      redirect_to @option, notice: "Opção atualizada com sucesso."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,18 +53,18 @@ class OptionsController < ApplicationController
 
   # DELETE /options/1
   def destroy
+    authorize @option
     @option.destroy!
-    redirect_to options_url, notice: "Option was successfully destroyed."
+    redirect_to options_url, notice: "Opção excluída com sucesso."
   end
 
   private
+
     def set_option
       @option = Option.find(params[:id])
     end
 
-    # MÉTODO CORRIGIDO
     def option_params
-      # VERSÃO CORRETA: Usa require e permit para segurança.
       params.require(:option).permit(:text, :correct, :question_id)
     end
 end
